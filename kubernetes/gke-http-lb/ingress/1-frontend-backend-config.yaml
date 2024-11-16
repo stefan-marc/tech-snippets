@@ -39,3 +39,15 @@ spec:
   securityPolicy:
     name: cloud-armor-policy
   timeoutSec: 120
+
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: ingress-frontend
+  namespace: istio-ingress-gateway
+spec:
+  redirectToHttps:
+    enabled: true
+    responseCodeName: PERMANENT_REDIRECT
+  sslPolicy: ssl-policy
