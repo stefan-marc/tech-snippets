@@ -1,0 +1,32 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: istio-ingress
+  namespace: istio-ingress-gateway
+spec:
+  commonName: istio-ingress-gw.istio-ingress-gateway
+  dnsNames:
+  - istio-ingress-gw.istio-ingress-gateway.svc.cluster.local
+  - istio-ingress-gw.istio-ingress-gateway
+  issuerRef:
+    kind: ClusterIssuer
+    name: selfsigned-cluster-issuer
+  renewBefore: 360h0m0s
+  secretName: istio-ingress-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hello-doggo-com-cert
+  namespace: istio-ingress-gateway
+spec:
+  commonName: hello-doggo.com
+  dnsNames:
+  - hello-doggo.com
+  - "*.hello-doggo.com"
+  issuerRef:
+    kind: ClusterIssuer
+    name: selfsigned-cluster-issuer
+  renewBefore: 360h0m0s
+  secretName: hello-doggo-com-cert

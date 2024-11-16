@@ -1,0 +1,68 @@
+---
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: istio-ingress-gw
+  namespace: istio-system
+spec:
+  components:
+    ingressGateways:
+    - enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 5
+          metrics:
+          - resource:
+              name: cpu
+              target:
+                averageUtilization: 80
+                type: Utilization
+            type: Resource
+          scaleTargetRef:
+            apiVersion: apps/v1
+            kind: Deployment
+            name: istio-ingress-gw
+        service:
+          ports:
+          - name: status-port
+            port: 15021
+            targetPort: 15021
+          - name: https
+            port: 443
+            targetPort: 8443
+          type: ClusterIP
+        serviceAnnotations:
+          cloud.google.com/app-protocols: '{"https":"HTTPS"}'
+          cloud.google.com/backend-config: '{"default": "ingress-backend"}'
+          cloud.google.com/neg: '{"ingress": true}'
+        strategy:
+          rollingUpdate:
+            maxSurge: 100%
+            maxUnavailable: 25%
+        overlays:
+        - kind: Deployment
+          name: istio-ingress-gw
+          patches:
+            - path: spec.template.spec.topologySpreadConstraints
+              value:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels:
+                      istio: istio-ingressgateway
+                      app: istio-ingress-gw
+                - maxSkew: 1
+                  topologyKey: topology.kubernetes.io/zone
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels:
+                      istio: istio-ingressgateway
+                      app: istio-ingress-gw
+      label:
+        app: istio-ingress-gw
+        istio: istio-ingressgateway
+      name: istio-ingress-gw
+      namespace: istio-ingress-gateway
+  profile: empty

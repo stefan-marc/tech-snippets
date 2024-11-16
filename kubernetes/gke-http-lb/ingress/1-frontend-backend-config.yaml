@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-ingress-gateway
+
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: ingress-backend
+  namespace: istio-ingress-gateway
+spec:
+  cdn:
+    enabled: true
+    cachePolicy:
+      includeHost: true
+      includeProtocol: true
+    cacheMode: CACHE_ALL_STATIC
+    defaultTtl: 3600
+    clientTtl: 3000
+    maxTtl: 7200
+  customRequestHeaders:
+    headers:
+    - "X-Client-Region:{client_region}"
+    - "X-Client-City:{client_city}"
+    - "X-Client-CityLatLong:{client_city_lat_long}"
+  connectionDraining:
+    drainingTimeoutSec: 60
+  healthCheck:
+    checkIntervalSec: 10
+    port: 15021
+    requestPath: /healthz/ready
+    timeoutSec: 2
+    type: HTTP
+  logging:
+    enable: true
+    sampleRate: 1
+  securityPolicy:
+    name: cloud-armor-policy
+  timeoutSec: 120
