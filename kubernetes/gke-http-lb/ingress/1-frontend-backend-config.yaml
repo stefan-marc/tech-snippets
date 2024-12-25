@@ -16,7 +16,7 @@ spec:
     cachePolicy:
       includeHost: true
       includeProtocol: true
-    cacheMode: CACHE_ALL_STATIC
+    cacheMode: USE_ORIGIN_HEADERS
     defaultTtl: 3600
     clientTtl: 3000
     maxTtl: 7200

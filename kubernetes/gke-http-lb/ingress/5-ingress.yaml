@@ -4,7 +4,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     cert-manager.io/issue-temporary-certificate: "true"
-    kubernetes.io/ingress.allow-http: "false"
+    kubernetes.io/ingress.allow-http: "true"
     kubernetes.io/ingress.class: gce
     kubernetes.io/ingress.global-static-ip-name: global-external-ip
     networking.gke.io/v1beta1.FrontendConfig: ingress-frontend
